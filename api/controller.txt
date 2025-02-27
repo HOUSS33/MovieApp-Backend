@@ -1,0 +1,15 @@
+var { error } = reviewResponse: 
+
+This line uses object destructuring to extract the error property from the reviewResponse object. If reviewResponse contains an error property, it will be assigned to the error variable.
+For example, if reviewResponse looks like this:
+javascript
+Copier le code
+{
+  error: "Something went wrong"
+}
+
+
+curl -X POST https://440f059d-982e-4ad2-8414-cc9eac732569-00-89rw5y4qzvzj.spock.replit.dev/api/v1/reviews/new -H "Content-Type: application/json" -d '{"movieid": 12, "user": "beau", "review": "good"}'
+
+
+https://440f059d-982e-4ad2-8414-cc9eac732569-00-89rw5y4qzvzj.spock.replit.dev/

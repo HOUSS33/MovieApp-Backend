@@ -1,0 +1,155 @@
+Example of a Collection Object:
+When you execute const reviewsCollection = conn.db("Movies").collection("reviews");, reviewsCollection will be a collection object with various properties and methods. The collection object might look something like this:
+
+javascript
+Copier le code
+{
+  s: {
+    db: "Movies",
+    collectionName: "reviews",
+    namespace: "Movies.reviews",
+    options: { },
+    topology: { /* connection details */ },
+    readConcern: { /* read settings */ },
+    writeConcern: { /* write settings */ },
+    internalHint: null,
+    readPreference: { /* read preference settings */ },
+    pkFactory: { /* primary key factory */ }
+  },
+  // Methods to interact with the collection
+  insertOne: [Function],
+  insertMany: [Function],
+  findOne: [Function],
+  find: [Function],
+  updateOne: [Function],
+  updateMany: [Function],
+  deleteOne: [Function],
+  deleteMany: [Function],
+  aggregate: [Function],
+  // ... additional methods
+}
+
+
+If the connection to the MongoDB server was not established properly, and you attempt to call conn.db("Movies").collection("reviews"), the result can vary depending on how the connection failure is handled in your code. However, typically:
+
+Possible Outcomes:
+Throws an Error:
+
+If the connection (conn) is not established, attempting to access conn.db("Movies") or conn.db("Movies").collection("reviews") would usually throw an error. This is because the conn object would be undefined or not properly initialized.
+For example:
+javascript
+
+TypeError: Cannot read property 'db' of undefined
+
+This error indicates that conn is not defined or is null, meaning the connection was not successfully established.
+Custom Error Handling:
+
+If your code has error handling mechanisms (e.g., try-catch blocks), the connection failure might be caught, and you can handle the error gracefully.
+For example:
+javascript
+
+try {
+  const reviewsCollection = conn.db("Movies").collection("reviews");
+} catch (e) {
+  console.error("Failed to access the collection: ", e);
+}
+
+In this case, reviewsCollection would not be initialized, and you'd handle the failure in the catch block.
+Returns undefined or null:
+
+If the connection object (conn) is null or undefined, attempting to call conn.db() will simply not work, and depending on the JavaScript runtime environment, it might return undefined or cause an error.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+insertOne returns an object like this:
+{
+  acknowledged: true,                                // A boolean indicating if the operation was acknowledged by the server
+  insertedId: ObjectId("64f842dcb8924d16c6b5e4d3")   // The unique ID of the inserted document
+}
+
+If the insertOne operation fails, it generally won't return a typical result object. Instead, it will usually throw an error
+
+---------------------------------------------------------------------------------------------------------------
+
+getReview method might return an object like this:
+{
+  _id: ObjectId("64f842dcb8924d16c6b5e4d3"),
+  movieId: "12345",
+  user: "Alice",
+  review: "Great movie!"
+}
+//If no review is found with the given reviewId, findOne returns null.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+The updateOne returns:
+{
+  acknowledged: true,   // Indicates if the operation was acknowledged by the server
+  matchedCount: 1,      // Number of documents that matched the query (should be 1 if a document was found)
+  modifiedCount: 1      // Number of documents that were modified (should be 1 if the document was successfully updated)
+}
+// - acknowledged: true/false (whether the operation was acknowledged by MongoDB)
+// - matchedCount: Number of documents that matched the query
+// - modifiedCount: Number of documents that were actually modified
+
+----------------------------------------------------------------------------------------------------------------------------
+
+The deleteOne returns:
+{
+  acknowledged: true,  // This indicates that the delete operation was acknowledged by the MongoDB server.
+  deletedCount: 1      // This shows the number of documents that were deleted (1 means one document was successfully deleted).
+}
+
+If a problem occurs with the deleteOne operation in MongoDB, it generally falls into one of these scenarios:
+
+Network Issues: If there's a network issue or connection problem, the operation might throw an error, which would not be part of the deleteOne result object. Instead, it would be captured by the catch block in your try-catch structure.
+
+Invalid Operation: If there's an issue with the operation itself, such as invalid query syntax or incorrect usage, MongoDB will typically throw an error. This will not be part of the result object but will be thrown as an exception, which should be caught and handled in the catch block.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+When you call await reviews.find({ movieId: 123 }), it returns a cursor object. This cursor is an instance of the Cursor class from the MongoDB driver. It represents an iterable object pointing to the documents that match the query { movieId: 123 } in the reviews collection.
+
+Detailed Breakdown:
+What is a Cursor?
+
+A cursor is a MongoDB object that allows you to iterate over the results of a query.
+It does not directly contain the results but provides methods to access and process them.
+Cursor Object:
+
+Cursor Properties: The cursor object itself doesn’t contain document data. Instead, it provides methods to retrieve documents from the database.
+Methods:
+toArray(): Converts the cursor to an array of documents.
+forEach(callback): Applies a callback function to each document in the cursor.
+next(): Retrieves the next document in the cursor.
+hasNext(): Checks if there are more documents available.
+limit(n): Limits the number of documents returned to n.
+sort(sortObject): Sorts the documents based on the provided criteria.
+
+const reviewsArray = await cursor.toArray()
+
+// Example output:
+[
+  {
+    "_id": ObjectId("64f22a53e4b0b1f7d8e1a8b5"),
+    "movieId": 123,
+    "user": "John Doe",
+    "review": "Great movie!"
+  },
+  {
+    "_id": ObjectId("64f22a53e4b0b1f7d8e1a8b6"),
+    "movieId": 123,
+    "user": "Jane Smith",
+    "review": "Not bad."
+  }
+]
+
+In MongoDB, if the find operation does not return any results, it returns an empty cursor. When you convert this cursor to an array using toArray(), you get an empty array. Here’s a detailed explanation:
+
+find Operation
+Empty Cursor: If no documents match the query, find returns a cursor that, when iterated, will yield no documents.
+toArray() Method
+Empty Array: When you call toArray() on this empty cursor, it resolves to an empty array ([]).
+Your Method
+Your method getReviewsByMovieId is correct in how it handles cases where no reviews are found. Here’s a summary of what it does:
+
+Find Operation:

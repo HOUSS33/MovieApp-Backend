@@ -1,0 +1,8 @@
+The mongodb package contains many different tools and classes for interacting with MongoDB. One of the most important classes is <MongoClient>, which is responsible for managing connections to a MongoDB database.
+
+Instead of referring to <mongodb.MongoClient> every time you need to work with the client, you store it in a shorter, more convenient variable MongoClient.
+
+What does MongoClient do?
+MongoClient is the class that provides methods for connecting to a MongoDB database and performing operations like querying, updating, and inserting documents.
+
+When you create an instance of MongoClient and call its connect method, it returns a client object. This client object allows you to interact with your MongoDB database.
